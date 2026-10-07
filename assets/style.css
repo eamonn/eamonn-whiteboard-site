@@ -1,0 +1,214 @@
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --ink: #1b1f24;
+  --muted: #667085;
+  --line: #e7e9ee;
+  --accent: #4f5bd5;
+  --accent-bg: #eceefc;
+  --red: #c4320a;
+  --red-bg: #fdecea;
+  --amber: #a15c07;
+  --amber-bg: #fef4e6;
+  --green: #067647;
+  --green-bg: #e7f6ee;
+  --grey-bg: #eef0f3;
+  --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --card: #171a21;
+    --ink: #e6e8ec;
+    --muted: #8b93a3;
+    --line: #262a33;
+    --accent: #8b93ff;
+    --accent-bg: #23264a;
+    --red: #ff8a73;
+    --red-bg: #3a1d18;
+    --amber: #f5b85c;
+    --amber-bg: #35281a;
+    --green: #5fd49a;
+    --green-bg: #15302a;
+    --grey-bg: #232731;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 40px 24px 56px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.top, .grid, .foot { max-width: 1100px; margin: 0 auto; }
+
+/* Header */
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+h1 { margin: 0; font-size: 30px; letter-spacing: -0.02em; }
+.sub { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.sub.stale { color: var(--amber); }
+
+.summary { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--grey-bg);
+  color: var(--muted);
+}
+.chip.overdue { background: var(--red-bg); color: var(--red); }
+.chip.today { background: var(--amber-bg); color: var(--amber); }
+.chip.week { background: var(--grey-bg); color: var(--ink); }
+
+/* Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.wide { grid-column: 1 / -1; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px 10px;
+}
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Lists */
+.list { list-style: none; margin: 0; padding: 0; }
+.list:not(:has(> li))::before {
+  content: attr(data-empty);
+  display: block;
+  padding: 12px 0 14px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.list > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 16px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.list > li:first-child { border-top: 0; }
+
+.title { grid-column: 1; font-weight: 600; }
+.note { grid-column: 1; color: var(--muted); font-size: 13.5px; }
+
+.list > li > time,
+.list > li > .pill {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  white-space: nowrap;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.list > li > .badge {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+}
+
+/* Priorities: big numbered list */
+#priorities .list { counter-reset: p; }
+#priorities .list > li {
+  counter-increment: p;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  padding: 14px 0;
+}
+#priorities .list > li::before {
+  content: counter(p);
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--accent);
+}
+#priorities .title { grid-column: 2; font-size: 17px; }
+#priorities .note { grid-column: 2; }
+#priorities .list > li > time { grid-column: 3; }
+#priorities .list > li > .badge { grid-column: 3; }
+
+/* Status pills (Working on) */
+.pill {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px !important;
+  font-weight: 600;
+}
+.pill.on-track { background: var(--green-bg); color: var(--green) !important; }
+.pill.at-risk  { background: var(--amber-bg); color: var(--amber) !important; }
+.pill.blocked  { background: var(--red-bg);   color: var(--red) !important; }
+.pill.paused   { background: var(--grey-bg);  color: var(--muted) !important; }
+
+/* Jira ticket statuses */
+.pill.todo        { background: var(--grey-bg);  color: var(--muted) !important; }
+.pill.in-progress { background: var(--accent-bg); color: var(--accent) !important; }
+
+/* Tickets carry both a status pill and an optional due date in the right column */
+#tickets .list > li > time { grid-row: 2; }
+#tickets .list > li > .badge { grid-row: 3; }
+
+/* Linked titles (e.g. Jira tickets) */
+a.title { color: inherit; text-decoration: none; }
+a.title:hover { color: var(--accent); text-decoration: underline; }
+.note a { color: inherit; text-decoration: underline dotted; text-underline-offset: 2px; }
+.note a:hover { color: var(--accent); }
+
+.synced {
+  margin-left: 8px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Relative-date badges (added by board.js) */
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+li.overdue > .badge, li.overdue > time { color: var(--red); }
+li.today > .badge, li.today > time { color: var(--amber); }
+li.soon > .badge { color: var(--amber); }
+
+.foot {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+}
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.95em; }
+
+@media (max-width: 760px) {
+  body { padding: 24px 14px 40px; }
+  .grid { grid-template-columns: 1fr; }
+}
